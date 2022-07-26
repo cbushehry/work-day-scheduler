@@ -6,8 +6,8 @@ Simple calendar application that allows the user to save events for each hour of
 DEPLOYMENT: https://cbushehry.github.io/work-day-scheduler/
 
 ## 2. Features
+ * Calendar display for your entire workday (8am - 5pm)
  * 
- *
  *
  *
 

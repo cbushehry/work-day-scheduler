@@ -13,6 +13,8 @@ Simple calendar application that allows the user to save events for each hour of
  * When user clicks save, the time block will save to their local storage
  * Desktop and Mobile copmatible
 
+ ![wds homepage](assets/images/wds-homepage.JPG)
+
 ## 3. Credits / Contact Info
 This application was created by Cameron Bushehry
 

@@ -1,58 +1,51 @@
-// Display today's day and date
-var todayDate = moment().format('dddd, MMM Do YYYY');
-$("#currentDay").html(todayDate);
-
-$(document).ready(function () {
-    // saveBtn click listener 
-    $(".saveBtn").on("click", function () {
-        // Get nearby values of the description in JQuery
-        var text = $(this).siblings(".description").val();
-        var time = $(this).parent().attr("id");
-
-        // Save text in local storage
-        localStorage.setItem(time, text);
-    })
-   
-    function timeTracker() {
-        //get current number of hours.
-        var timeNow = moment().hour();
-
-        // loop over time blocks
-        $(".time-block").each(function () {
-            var blockTime = parseInt($(this).attr("id").split("hour")[1]);
-
-            // To check the time and add the classes for background indicators
-            if (blockTime < timeNow) {
-                $(this).removeClass("future");
-                $(this).removeClass("present");
-                $(this).addClass("past");
-            }
-            else if (blockTime === timeNow) {
-                $(this).removeClass("past");
-                $(this).removeClass("future");
-                $(this).addClass("present");
-            }
-            else {
-                $(this).removeClass("present");
-                $(this).removeClass("past");
-                $(this).addClass("future");
-
-            }
-        })
+document.addEventListener("DOMContentLoaded", function () {
+    // Display today's date (e.g. "Wednesday, Apr 30th 2026")
+    function ordinal(n) {
+        const s = ["th", "st", "nd", "rd"];
+        const v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
     }
 
-    // Get item from local storage if any
-    $("#hour8 .description").val(localStorage.getItem("hour8"));
-    $("#hour9 .description").val(localStorage.getItem("hour9"));
-    $("#hour10 .description").val(localStorage.getItem("hour10"));
-    $("#hour11 .description").val(localStorage.getItem("hour11"));
-    $("#hour12 .description").val(localStorage.getItem("hour12"));
-    $("#hour13 .description").val(localStorage.getItem("hour13"));
-    $("#hour14 .description").val(localStorage.getItem("hour14"));
-    $("#hour15 .description").val(localStorage.getItem("hour15"));
-    $("#hour16 .description").val(localStorage.getItem("hour16"));
-    $("#hour17 .description").val(localStorage.getItem("hour17"));
+    const now = new Date();
+    const weekday = now.toLocaleDateString("en-US", { weekday: "long" });
+    const month = now.toLocaleDateString("en-US", { month: "short" });
+    const year = now.getFullYear();
+    document.getElementById("currentDay").textContent =
+        `${weekday}, ${month} ${ordinal(now.getDate())} ${year}`;
+
+    // Save button click listener
+    document.querySelectorAll(".saveBtn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const text = btn.previousElementSibling.value;
+            const id = btn.closest(".time-block").id;
+            localStorage.setItem(id, text);
+        });
+    });
+
+    // Color-code blocks based on current hour
+    function timeTracker() {
+        const timeNow = new Date().getHours();
+        document.querySelectorAll(".time-block").forEach(function (block) {
+            const blockHour = parseInt(block.id.replace("hour", ""), 10);
+            block.classList.remove("past", "present", "future");
+            if (blockHour < timeNow) {
+                block.classList.add("past");
+            } else if (blockHour === timeNow) {
+                block.classList.add("present");
+            } else {
+                block.classList.add("future");
+            }
+        });
+    }
+
+    // Load saved notes from localStorage
+    document.querySelectorAll(".time-block").forEach(function (block) {
+        const saved = localStorage.getItem(block.id);
+        if (saved !== null) {
+            block.querySelector(".description").value = saved;
+        }
+    });
 
     timeTracker();
     setInterval(timeTracker, 60000);
-})
+});
